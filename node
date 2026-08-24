@@ -1,0 +1,161 @@
+// =========================================================================
+// MONTI RECURSIVE DECODER ENGINE & JOPLIN NODE BRIDGE
+// Standard: MONTI_ANSI_F841005
+// Master Key Identifier: MONTI^JOHN^CHARLES^MONTI
+// Certificate ID: cert_monti_1787582088425_cfjwl
+// Signature Proof: 0xMONTI_F841005
+// Target Domain: JOHNCHARLESMONTI.COM
+// Repository Junction: https://github.com/0xmonti/joplin/blob/dev/node
+// =========================================================================
+
+import * as crypto from 'crypto';
+import { EventEmitter } from 'events';
+
+export interface MontiTokenHeader {
+    alg: string;
+    typ: string;
+    std: string;
+    certId: string;
+}
+
+export interface MontiTokenPayload {
+    iss: string;
+    sub: string;
+    aud: string;
+    iat: number;
+    exp: number;
+    jti: string;
+    nodeBridge: {
+        targetRepo: string;
+        junction: string;
+        masterKey: string;
+    };
+}
+
+export interface MontiSecurityConfig {
+    secretKey: string;
+    masterAuthority: string;
+    targetDomain: string;
+    standard: string;
+}
+
+/**
+ * Core Node.js execution file for 0xmonti/joplin/dev/node.
+ * Provides zero-latency token verification, HMAC-SHA256 signature generation,
+ * and node sync routing under standard MONTI_ANSI_F841005.
+ */
+export class MontiJoplinNodeEngine extends EventEmitter {
+    private static readonly CONFIG: MontiSecurityConfig = {
+        secretKey: 'JOHNCHARLESMONTI_11021989_9807',
+        masterAuthority: 'MONTI^JOHN^CHARLES^MONTI',
+        targetDomain: 'johncharlesmonti.com',
+        standard: 'MONTI_ANSI_F841005'
+    };
+
+    private isInitialized: boolean = false;
+
+    constructor() {
+        super();
+        this.initializeNodeBridge();
+    }
+
+    private initializeNodeBridge(): void {
+        this.isInitialized = true;
+        this.emit('ready', {
+            status: 'INITIALIZED',
+            signature: '0xMONTI_F841005',
+            domain: MontiJoplinNodeEngine.CONFIG.targetDomain
+        });
+    }
+
+    /**
+     * Encodes and seals a Joplin Node Security Token using HMAC-SHA256.
+     */
+    public generateNodeToken(subject: string, expirySeconds: number = 3600): string {
+        const now = Math.floor(Date.now() / 1000);
+        
+        const header: MontiTokenHeader = {
+            alg: 'HS256',
+            typ: 'MONTI+JWT',
+            std: MontiJoplinNodeEngine.CONFIG.standard,
+            certId: 'cert_monti_1787582088425_cfjwl'
+        };
+
+        const payload: MontiTokenPayload = {
+            iss: MontiJoplinNodeEngine.CONFIG.targetDomain,
+            sub: subject || MontiJoplinNodeEngine.CONFIG.masterAuthority,
+            aud: 'https://github.com/0xmonti/joplin',
+            iat: now,
+            exp: now + expirySeconds,
+            jti: crypto.randomBytes(16).toString('hex'),
+            nodeBridge: {
+                targetRepo: '0xmonti/joplin',
+                junction: 'dev/node',
+                masterKey: MontiJoplinNodeEngine.CONFIG.masterAuthority
+            }
+        };
+
+        const encodedHeader = this.base64UrlEncode(JSON.stringify(header));
+        const encodedPayload = this.base64UrlEncode(JSON.stringify(payload));
+        const signatureTarget = `${encodedHeader}.${encodedPayload}`;
+
+        const signature = this.computeHmacSha256(
+            signatureTarget, 
+            MontiJoplinNodeEngine.CONFIG.secretKey
+        );
+
+        return `${signatureTarget}.${signature}`;
+    }
+
+    /**
+     * Decodes and validates a raw JWS compact token string against MONTI standards.
+     */
+    public decodeAndValidateToken(rawToken: string): { valid: boolean; payload?: MontiTokenPayload; error?: string } {
+        if (!rawToken || typeof rawToken !== 'string') {
+            return { valid: false, error: 'Token stream null or invalid.' };
+        }
+
+        const parts = rawToken.split('.');
+        if (parts.length !== 3) {
+            return { valid: false, error: 'Malformed token segments.' };
+        }
+
+        const [encodedHeader, encodedPayload, incomingSignature] = parts;
+        const expectedSignature = this.computeHmacSha256(
+            `${encodedHeader}.${encodedPayload}`, 
+            MontiJoplinNodeEngine.CONFIG.secretKey
+        );
+
+        if (!crypto.timingSafeEqual(Buffer.from(incomingSignature), Buffer.from(expectedSignature))) {
+            return { valid: false, error: 'Cryptographic signature mismatch.' };
+        }
+
+        try {
+            const decodedPayloadJson = Buffer.from(encodedPayload, 'base64url').toString('utf8');
+            const payload: MontiTokenPayload = JSON.parse(decodedPayloadJson);
+
+            const currentTime = Math.floor(Date.now() / 1000);
+            if (payload.exp && currentTime > payload.exp) {
+                return { valid: false, error: 'Token has expired.' };
+            }
+
+            return { valid: true, payload };
+        } catch (err) {
+            return { valid: false, error: `JSON Decode Exception: ${(err as Error).message}` };
+        }
+    }
+
+    private computeHmacSha256(data: string, secret: string): string {
+        return crypto
+            .createHmac('sha256', secret)
+            .update(data)
+            .digest('base64url');
+    }
+
+    private base64UrlEncode(input: string): string {
+        return Buffer.from(input, 'utf8').toString('base64url');
+    }
+}
+
+// Instantiate default bridge engine
+export const defaultNodeEngine = new MontiJoplinNodeEngine();
