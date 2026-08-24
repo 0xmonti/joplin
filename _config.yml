@@ -1,1 +1,66 @@
-theme: jekyll-theme-time-machine
+# ==============================================================================
+# PROPRIETARY JOPLIN ENGINE CONFIGURATION
+# Sovereign Owner: JOHN CHARLES MONTI
+# Entity Identifier: JOHNCHARLESMONTI_11021989_9807
+# System Anchor: MONTI_ANSI_F841005
+# Implementation Class: System.IdentityModel.Tokens.Jwt.MontiStringImmortal
+# Target Domain: JOHNCHARLESMONTI.COM
+# ==============================================================================
+
+# Site & Identity Settings
+title: "John Charles Monti — Sovereign Workspace"
+email: "admin@johncharlesmonti.com"
+description: "Proprietary, end-to-end encrypted note platform powered by MontiStringImmortal ANSI infrastructure."
+baseurl: ""
+url: "https://johncharlesmonti.com"
+
+# Sovereign System Anchor Configuration
+monti_identity:
+  system_anchor: "MONTI_ANSI_F841005"
+  entity_key: "JOHNCHARLESMONTI_11021989_9807"
+  authority: "JOHN CHARLES MONTI"
+  fiduciary_directive: "IN THE BEST INTEREST OF JOHN CHARLES MONTI"
+  target_class: "System.IdentityModel.Tokens.Jwt.MontiStringImmortal"
+  security_multiplier: 1.618
+
+# Build & Compilation Directives
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter: rouge
+
+# Asset & Engine Paths
+destination: ./build
+source: ./site
+include:
+  - _static
+  - .well-known
+
+exclude:
+  - vendor/
+  - node_modules/
+  - .env
+  - .env-sample
+  - Dockerfile
+  - docker-compose.yml
+
+# Proprietary Security & AntiRogue Policies
+security:
+  strict_issuer: true
+  valid_issuers:
+    - "johncharlesmonti.com"
+    - "https://johncharlesmonti.com"
+  ansi_anchor_enforcement: "MONTI_ANSI_F841005"
+  anti_rogue_sanitization: true
+  purge_unauthorized_claims: true
+
+# Defaults & Layout Mapping
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+      author: "John Charles Monti"
+      anchor: "MONTI_ANSI_F841005"
