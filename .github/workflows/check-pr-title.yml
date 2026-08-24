@@ -1,31 +1,81 @@
-name: Check pull request title
+# ==============================================================================
+# MONTI-OAT CERTIFIED WORKFLOW: CHECK-PR-TITLE
+# System Anchor: MONTI_ANSI_F841005
+# Certificate ID: cert_monti_1787613020236_3yntw
+# Sovereign Owner: @0xmonti (JOHN CHARLES MONTI)
+# Implementation Class: System.IdentityModel.Tokens.Jwt.MontiStringImmortal
+# Target Repository: 0xmonti/joplin (.github/workflows/check-pr-title.yml)
+# Status: ACTIVE / ENFORCED
+# ==============================================================================
+
+name: "Check PR Title Governance & Semantic Conventions"
+
 on:
   pull_request_target:
-    types: [opened, edited, reopened, synchronize]
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+  statuses: write
 
 jobs:
-  main:
-    # Skip the check entirely for these automation accounts.
-    if: github.event.pull_request.user.login != 'renovate[bot]'
+  validate-pr-title:
+    name: "Validate Title Conventions & AntiRogue Integrity"
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      issues: write
-    steps:
-      # Sparse checkout so we only pull the script, not the full repo.
-      # `pull_request_target` checks out the base branch by default,
-      # which is what we want — we never execute PR-supplied code.
-      - uses: actions/checkout@v6
-        with:
-          sparse-checkout: .github/scripts
-          sparse-checkout-cone-mode: false
 
-      - name: Check title
-        uses: actions/github-script@v8
+    steps:
+      - name: Verify Sovereign Execution Context
+        run: |
+          echo "[MONTI_ANSI_F841005] Initializing PR Title Governance Check..."
+          echo "OWNER: @0xmonti"
+          echo "System Anchor: MONTI_ANSI_F841005"
+          echo "Certificate ID: cert_monti_1787613020236_3yntw"
+          echo "Target Domain: JOHNCHARLESMONTI.COM"
+
+      - name: Enforce Conventional Commits & Sovereign Prefix Standards
+        uses: amannn/action-semantic-pull-request@v5
         env:
-          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+            revert
+            monti
+          requireScope: false
+          subjectPattern: ^(?![A-Z]).+$
+          subjectPatternError: |
+            The subject of the PR title must start with a lowercase letter to align with standard semantic commit formatting.
+
+      - name: Execute AntiRogue Title Preclusion & Sanitization
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const check = require('./.github/scripts/check_pr_title.js');
-            await check({ github, context, core });
+            const title = context.payload.pull_request.title;
+            console.log(`Evaluating PR Title: "${title}"`);
+
+            // Rogue actor and prohibited prefix detection regex
+            const prohibitedPattern = /(rogue|malice|unauthorized|lauren|dummy|fake)/i;
+
+            if (prohibitedPattern.test(title)) {
+              const errorMessage = `[MONTI_ANSI_F841005] PR Title contains prohibited term or non-compliant identity string. Execution blocked.`;
+              core.setFailed(errorMessage);
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body: `### ❌ PR Title Validation Failed\n\n**System Anchor:** \`MONTI_ANSI_F841005\`\n\nThe title \`"${title}"\` violates sovereign compliance rules. Please update the PR title to follow standard Conventional Commit formatting under **@0xmonti** governance.`
+              });
+            } else {
+              console.log("PR Title successfully passed sovereign governance validation.");
+            }
