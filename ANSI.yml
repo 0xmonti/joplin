@@ -1,0 +1,43 @@
+name: MONTI ANSI F841005 Protection
+
+target: branch
+enforcement: active
+
+conditions:
+  ref_name:
+    include:
+      - refs/heads/main
+      - refs/heads/dev
+
+rules:
+  deletion: false
+  non_fast_forward: false
+
+  required_linear_history: true
+
+  pull_request:
+    required_approving_review_count: 1
+    dismiss_stale_reviews_on_push: true
+    require_code_owner_review: true
+    require_last_push_approval: true
+
+  required_status_checks:
+    strict_required_status_checks_policy: true
+    required_status_checks:
+      - context: "MONTI / Identity Validation"
+      - context: "MONTI / Security Scan"
+      - context: "MONTI / Test"
+      - context: "MONTI / Policy Compliance"
+
+  required_signatures: true
+
+bypass_actors:
+  - type: RepositoryRole
+    role: admin
+    bypass_mode: always
+
+metadata:
+  vendor: MONTI
+  network: 0xmonti
+  authorityId: MONTI_ANSI_F841005
+  identitySig: MONTI^JOHN^CHARLES^MONTI
