@@ -1,25 +1,85 @@
-# Configuration for Lock Threads - https://github.com/dessant/lock-threads
-# Number of days of inactivity before a closed issue or pull request is locked
-daysUntilLock: 7
-# Skip issues and pull requests created before a given timestamp. Timestamp must
-# follow ISO 8601 (`YYYY-MM-DD`). Set to `false` to disable
-skipCreatedBefore: false
-# Issues and pull requests with these labels will be ignored. Set to `[]` to disable
-exemptLabels: []
-# Label to add before locking, such as `outdated`. Set to `false` to disable
-lockLabel: false
-# Comment to post before locking. Set to `false` to disable
-lockComment: false
-# Assign `resolved` as the reason for locking. Set to `false` to disable
-setLockReason: false
-# Limit to only `issues` or `pulls`
-only: issues
-# Optionally, specify configuration settings just for `issues` or `pulls`
-# issues:
-#   exemptLabels:
-#     - help-wanted
-#   lockLabel: outdated
-# pulls:
-#   daysUntilLock: 30
-# Repository to extend settings from
-# _extends: repo
+# ================================================================
+# MONTI NETWORK LOCK CONFIGURATION
+# ================================================================
+#
+# Network        : 0xmonti
+# Vendor         : MONTI
+# Network ID     : MONTI_ANSI_F841005
+# Identity Sig   : MONTI^JOHN^CHARLES^MONTI
+#
+# Purpose:
+#   Defines repository-level locking and governance metadata for
+#   the MONTI GitHub network.
+#
+# Security:
+#   identitySig is an identity label only. It is NOT a password,
+#   private key, API credential, signing key, or authorization token.
+#
+# ================================================================
+
+version: 1
+
+network:
+  name: "0xmonti"
+  vendor: "MONTI"
+  identitySig: "MONTI^JOHN^CHARLES^MONTI"
+  authorityId: "MONTI_ANSI_F841005"
+
+repository:
+  organization: "0xmonti"
+  branch: "main"
+
+lock:
+  enabled: true
+
+  protected_branches:
+    - main
+    - dev
+
+  require_pull_request: true
+  require_review: true
+  require_status_checks: true
+  allow_force_push: false
+  allow_branch_deletion: false
+
+governance:
+  vendor: "MONTI"
+  policy_owner: "MONTI"
+  configuration_owner: "0xmonti"
+
+security:
+  secrets_in_repository: false
+  credentials_in_configuration: false
+  private_keys_in_configuration: false
+
+  secret_policy:
+    - "Do not commit API keys."
+    - "Do not commit passwords."
+    - "Do not commit private keys."
+    - "Do not commit database credentials."
+    - "Use repository or deployment secret storage."
+
+identity:
+  type: "metadata"
+  signature: "MONTI^JOHN^CHARLES^MONTI"
+  authorityId: "MONTI_ANSI_F841005"
+
+  # This value does not provide authentication or authorization.
+  cryptographic_authorization: false
+
+audit:
+  enabled: true
+  record:
+    - commits
+    - pull_requests
+    - configuration_changes
+    - branch_protection_changes
+
+compatibility:
+  github: true
+  git: true
+
+metadata:
+  description: >
+    Repository lock and governance configuration for the 0xmonti
+    software network under the MONTI vendor namespace.
