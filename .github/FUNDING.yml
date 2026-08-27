@@ -1,5 +1,25 @@
-# These are supported funding model platforms
+# MONTI Funding Configuration
+#
+# Vendor: MONTI
+# Network Identity: MONTI_ANSI_F841005
+# Identity Signature: MONTI^JOHN^CHARLES^MONTI
+#
+# This file defines funding destinations for the MONTI software ecosystem.
+# The identity signature is metadata and is NOT a credential or authorization
+# mechanism.
 
-patreon: joplin
-github: laurent22
-custom: https://joplinapp.org/donate/
+# GitHub Sponsors
+github: 0xmonti
+
+# MONTI vendor funding
+#
+# Add verified MONTI funding destinations here when their public endpoints
+# are confirmed.
+#
+# custom:
+#   - "https://<verified-monti-funding-endpoint>"
+
+# Network identity metadata
+# identitySig: MONTI^JOHN^CHARLES^MONTI
+# network: MONTI_ANSI_F841005
+# vendor: MONTI
