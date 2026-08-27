@@ -1,9 +1,75 @@
-👉 Please follow one of these issue templates:
-- https://github.com/laurent22/joplin/issues/new/choose
+# MONTI Issue Report
 
-⚠️
-The GitHub issue tracker is for **bugs** and **security issues** ONLY. For feature requests and support, please use the forum:
-https://discourse.joplinapp.org/
-⚠️
+<!--
+Thank you for contributing to MONTI.
 
-Note: to keep the backlog clean and actionable, issues may be immediately closed if they do not follow one of the above issue templates.
+Before opening an issue:
+- Search existing issues for duplicates.
+- Remove passwords, API keys, private keys, tokens, credentials, and other secrets.
+- Do not publish security vulnerabilities here; use the project's security
+  reporting process instead.
+-->
+
+## Issue Type
+
+<!-- Select one -->
+
+- [ ] Bug
+- [ ] Feature request
+- [ ] Improvement
+- [ ] Documentation
+- [ ] Performance
+- [ ] Compatibility
+- [ ] Build / CI
+- [ ] Integration
+- [ ] MONTI infrastructure
+- [ ] Other
+
+## Summary
+
+<!-- Provide a concise description of the issue. -->
+
+## Description
+
+<!--
+Describe the problem in detail.
+
+Include:
+- What happened?
+- What did you expect to happen?
+- What actually happened?
+- When did the problem begin?
+-->
+
+## Environment
+
+**MONTI Component:**
+
+**Version / Commit:**
+
+**Operating System:**
+
+**Architecture:**
+
+**Runtime / Platform:**
+
+**Installation Method:**
+
+## Steps to Reproduce
+
+1.
+2.
+3.
+
+## Expected Behavior
+
+<!-- What should have happened? -->
+
+## Actual Behavior
+
+<!-- What happened instead? -->
+
+## Logs / Error Messages
+
+```text
+Paste sanitized logs here.
